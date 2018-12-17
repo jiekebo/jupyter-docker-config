@@ -11,7 +11,10 @@ RUN pip install jupyter-contrib-nbextensions
 RUN jupyter contrib nbextension install
 RUN jupyter nbextension enable toc2/main
 
-USER $NB_USER
+ADD 00_init.py /home/jovyan/.ipython/profile_default/startup/
+RUN chown -R jovyan:users /home/jovyan/.ipython
+
+USER $NB_UID
 
 RUN conda install --quiet --yes \
     'basemap' \
@@ -19,6 +22,5 @@ RUN conda install --quiet --yes \
     'fbprophet'
 
 ADD matplotlibrc ~/.config/matplotlib/
-ADD init.py /home/jovyan/.ipython/profile_default/startup/
 RUN jupyter notebook --generate-config -y
 ADD jupyter_notebook_config.py /home/jovyan/.jupyter/
